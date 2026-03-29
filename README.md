@@ -3,6 +3,15 @@
 HardenedBSD Cyber Range — a self-contained security learning platform with 100% Infrastructure as Code.
 
 ```
+     ____.      .__  .__         ___________.__       .__    _________                        
+    |    | ____ |  | |  | ___.__.\_   _____/|__| _____|  |__ \_   ___ \_______   ______  _  __
+    |    |/ __ \|  | |  |<   |  | |    __)  |  |/  ___/  |  \/    \  \/\_  __ \_/ __ \ \/ \/ /
+/\__|    \  ___/|  |_|  |_\___  | |     \   |  |\___ \|   Y  \     \____|  | \/\  ___/\     / 
+\________|\___  >____/____/ ____| \___  /   |__/____  >___|  /\______  /|__|    \___  >\/\_/  
+              \/          \/          \/            \/     \/        \/             \/        
+```
+
+```
 git clone <repo> && cd aurelia-bloom
 cd packer && packer build hardenedbsd.pkr.hcl   # build base box from ISO
 cd .. && vagrant up                               # boot all 4 VMs
