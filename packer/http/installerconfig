@@ -1,0 +1,29 @@
+PARTITIONS=AUTO
+DISTRIBUTIONS="kernel.txz base.txz"
+
+#!/bin/sh
+
+# Set root password
+echo "vagrant" | pw usermod root -h 0
+
+# Enable SSH
+sysrc sshd_enable="YES"
+sysrc sendmail_enable="NONE"
+
+# Allow root login for Packer provisioning (will be locked down later)
+sed -i '' 's/^#PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config
+sed -i '' 's/^#PasswordAuthentication.*/PasswordAuthentication yes/' /etc/ssh/sshd_config
+
+# Network — DHCP on first interface
+sysrc ifconfig_em0="DHCP"
+sysrc defaultrouter="10.0.2.2"
+
+# Set hostname
+hostname hardenedbsd
+sysrc hostname="hardenedbsd"
+
+# Set timezone
+ln -sf /usr/share/zoneinfo/UTC /etc/localtime
+
+# Reboot into the installed system
+reboot
