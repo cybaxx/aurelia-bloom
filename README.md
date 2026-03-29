@@ -26,6 +26,8 @@ Self contained learning platform, don't be a cunt, don't delete anything, add on
 - experiment and learn
 - have fun creating digital chaos
 - ride the amorphous jellyfish
+- creat infra as code
+- git pull often
 
 ## Quick start
 
