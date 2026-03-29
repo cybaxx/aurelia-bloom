@@ -27,6 +27,7 @@ Self contained learning platform, don't be a cunt, don't delete anything, add on
 - have fun creating digital chaos
 - ride the amorphous jellyfish
 
+## Quick start
 
 ```
 git clone <repo> && cd aurelia-bloom
