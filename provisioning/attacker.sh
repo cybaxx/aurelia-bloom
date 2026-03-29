@@ -19,4 +19,7 @@ fi
 
 chown -R labuser:labuser /opt/exploits
 
+# Encrypted P2P chat system
+/bin/sh /vagrant/provisioning/chat.sh
+
 echo "=== Attacker setup complete ==="

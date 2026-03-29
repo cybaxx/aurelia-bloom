@@ -40,6 +40,7 @@ vagrant ssh attacker                              # start hacking
 | `lab/` | Vulnerable C programs + exploits + writeups |
 | `tutorials/` | Unix fundamentals (shell, permissions, networking, pf) |
 | `guides/` | HardenedBSD security deep-dives (ASLR, CFI, pledge, pf) |
+| `chat/` | Tor-based E2E encrypted P2P chat between players |
 
 ## Lab Exercises
 
@@ -92,6 +93,19 @@ vagrant ssh attacker                              # start hacking
    # On target-basic:
    /opt/lab/bin/vulnerable $(python3 -c "print('A'*80)")
    ```
+
+## Player Chat
+
+The attacker VM includes an E2E encrypted P2P chat system over Tor. Players on separate machines (even behind NAT) can communicate securely:
+
+```sh
+vagrant ssh attacker
+chat id                       # show your .onion address
+chat add-peer <other.onion>   # connect to another player
+chat                          # interactive mode
+```
+
+Messages are encrypted with XChaCha20-Poly1305 (libsodium). Peers authenticate via a shared secret (defaults to `aurelia-bloom`). See `chat/README.md` for details.
 
 ## Workflow: basic vs hardened
 
