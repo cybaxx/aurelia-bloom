@@ -19,6 +19,8 @@ HardenedBSD Cyber Range — a self-contained security learning platform with 100
 
 Self contained learning platform, don't be a cunt, don't delete anything, add only, archive the old
 
+https://www.unix.com/man_page/freebsd/1/ash
+
 - don't break the law
 - don't delete anything
 - add anything you want
@@ -28,6 +30,7 @@ Self contained learning platform, don't be a cunt, don't delete anything, add on
 - ride the amorphous jellyfish
 - creat infra as code
 - git pull often
+- https://www.unix.com/man_page/freebsd/1/ash its important enough to be on here twice
 
 ## Quick start
 
