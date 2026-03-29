@@ -15,6 +15,18 @@ HardenedBSD Cyber Range — a self-contained security learning platform with 100
                                                                                                                                
 112 145 154 154 171 106 151 163 150 103 162 145 167 :: 112 145 154 154 171 106 151 163 150 103 162 145 167 ::                                                                                                                               
 ```
+## Intro // Rules
+
+Self contained learning platform, don't be a cunt, don't delete anything, add only, archive the old
+
+- don't break the law
+- don't delete anything
+- add anything you want
+- don't be a cunt
+- experiment and learn
+- have fun creating digital chaos
+- ride the amorphous jellyfish
+
 
 ```
 git clone <repo> && cd aurelia-bloom
