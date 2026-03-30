@@ -1,0 +1,49 @@
+# Build artifacts
+chat/obj/*.o
+chat/chatd
+chat/chat
+lab/**/*.bin
+lab/**/*.elf
+*.o
+*.a
+*.so
+
+# Packer
+*.box
+packer/output-*/
+packer/packer_cache/
+
+# Vagrant
+.vagrant/
+
+# QEMU test cache
+.cache/
+
+# Secrets — never commit private keys or credentials
+*.pem
+*.key
+*.p12
+*.pfx
+*.secret
+*.secret.*
+*-secret.asc
+.env
+.env.*
+credentials.*
+id_rsa
+id_ed25519
+*.gnupg/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# Logs
+*.log
