@@ -3,11 +3,10 @@ set -e
 
 echo "=== Attacker Machine Setup ==="
 
-pkg install -y radare2 py311-pwntools binutils nasm python3 \
-  py311-capstone 2>/dev/null || true
+pkg install -y radare2 py311-pwntools python3 py311-capstone \
+  gdb git vim tmux 2>/dev/null || true
 
-# Python exploitation helpers
-python3 -m pip install --quiet pwntools 2>/dev/null || true
+# py311-pwntools already provides pwntools via pkg
 
 # Attacker workspace
 mkdir -p /opt/exploits/tools /opt/exploits/payloads /opt/exploits/rop

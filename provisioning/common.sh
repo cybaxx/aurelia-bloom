@@ -6,9 +6,8 @@ echo "=== Common Provisioning ==="
 # Update package repo
 env ASSUME_ALWAYS_YES=yes pkg update -f
 
-# Install base tools
-pkg install -y git vim tmux gdb lldb gcc nasm gmake python3 \
-  binutils bash
+# Install host build tools (minimal — heavy tools go in attacker jail)
+pkg install -y gcc nasm gmake binutils
 
 # Create lab user
 if ! pw usershow labuser >/dev/null 2>&1; then

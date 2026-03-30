@@ -1,9 +1,18 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-# HardenedBSD Cyber Range
+# HardenedBSD Cyber Range — Single VM + Jails Architecture
 # Build the base box first: cd packer && packer build hardenedbsd.pkr.hcl
 # Then: vagrant up
+#
+# Jails provide the attacker/target separation:
+#   attacker  = 192.168.56.10  (full userland, exploit tools)
+#   basic     = 192.168.56.20  (BusyBox, protections disabled)
+#   hardened  = 192.168.56.30  (BusyBox, full protections)
+#   service   = 192.168.56.40  (BusyBox + nginx)
+#
+# SSH into jails: ssh labuser@192.168.56.{10,20,30,40}
+# Legacy multi-VM config: see Vagrantfile.multi-vm
 
 BOX_NAME = "hardenedbsd-15stable"
 
@@ -11,70 +20,26 @@ Vagrant.configure("2") do |config|
   config.vm.box = BOX_NAME
   config.vm.box_check_update = false
   config.vm.synced_folder ".", "/vagrant", type: "rsync",
-    rsync__exclude: [".git/", "packer/output-hardenedbsd/"]
+    rsync__exclude: [".git/", "packer/output-hardenedbsd/", ".vagrant/"]
 
   config.ssh.shell = "sh"
+  config.vm.hostname = "cyber-range"
 
-  # ── Attacker ──────────────────────────────────────────────
-  config.vm.define "attacker", primary: true do |m|
-    m.vm.hostname = "attacker"
-    m.vm.network "private_network", ip: "192.168.56.10"
+  # Host VM gets bridge IP .1 — jails get .10/.20/.30/.40
+  config.vm.network "private_network", ip: "192.168.56.1"
 
-    m.vm.provider "virtualbox" do |vb|
-      vb.memory = 2048
-      vb.cpus   = 2
-      vb.name   = "cyber-range-attacker"
-    end
-
-    m.vm.provision "shell", path: "provisioning/common.sh"
-    m.vm.provision "shell", path: "provisioning/attacker.sh"
+  config.vm.provider "virtualbox" do |vb|
+    vb.memory = 2048
+    vb.cpus   = 2
+    vb.name   = "cyber-range"
+    # Enable promiscuous mode for bridge networking to jails
+    vb.customize ["modifyvm", :id, "--nicpromisc2", "allow-all"]
   end
 
-  # ── Target: Basic (protections disabled) ──────────────────
-  config.vm.define "target-basic" do |m|
-    m.vm.hostname = "target-basic"
-    m.vm.network "private_network", ip: "192.168.56.20"
-
-    m.vm.provider "virtualbox" do |vb|
-      vb.memory = 1024
-      vb.cpus   = 1
-      vb.name   = "cyber-range-target-basic"
-    end
-
-    m.vm.provision "shell", path: "provisioning/common.sh"
-    m.vm.provision "shell", path: "provisioning/target-basic.sh"
-    m.vm.provision "shell", path: "provisioning/lab-setup.sh"
-  end
-
-  # ── Target: Hardened (full protections) ───────────────────
-  config.vm.define "target-hardened" do |m|
-    m.vm.hostname = "target-hardened"
-    m.vm.network "private_network", ip: "192.168.56.30"
-
-    m.vm.provider "virtualbox" do |vb|
-      vb.memory = 1024
-      vb.cpus   = 1
-      vb.name   = "cyber-range-target-hardened"
-    end
-
-    m.vm.provision "shell", path: "provisioning/common.sh"
-    m.vm.provision "shell", path: "provisioning/target-hardened.sh"
-    m.vm.provision "shell", path: "provisioning/lab-setup.sh"
-  end
-
-  # ── Target: Service (vulnerable services) ─────────────────
-  config.vm.define "target-service" do |m|
-    m.vm.hostname = "target-service"
-    m.vm.network "private_network", ip: "192.168.56.40"
-
-    m.vm.provider "virtualbox" do |vb|
-      vb.memory = 1024
-      vb.cpus   = 1
-      vb.name   = "cyber-range-target-service"
-    end
-
-    m.vm.provision "shell", path: "provisioning/common.sh"
-    m.vm.provision "shell", path: "provisioning/target-hardened.sh"
-    m.vm.provision "shell", path: "provisioning/services.sh"
-  end
+  # Provisioner chain: host setup → jails → per-jail config
+  config.vm.provision "shell", path: "provisioning/common.sh"
+  config.vm.provision "shell", path: "provisioning/jails.sh"
+  config.vm.provision "shell", path: "provisioning/jail-attacker.sh"
+  config.vm.provision "shell", path: "provisioning/jail-targets.sh"
+  config.vm.provision "shell", path: "provisioning/jail-services.sh"
 end
