@@ -14,8 +14,16 @@ sysrc sendmail_enable="NONE"
 sed -i '' 's/^#PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config
 sed -i '' 's/^#PasswordAuthentication.*/PasswordAuthentication yes/' /etc/ssh/sshd_config
 
-# Network — DHCP on first interface
-sysrc ifconfig_em0="DHCP"
+# Network — DHCP on first interface (em0 on VirtualBox, vtnet0 on QEMU/virtio)
+if ifconfig vtnet0 >/dev/null 2>&1; then
+  sysrc ifconfig_vtnet0="DHCP"
+elif ifconfig em0 >/dev/null 2>&1; then
+  sysrc ifconfig_em0="DHCP"
+else
+  # Fallback: try both
+  sysrc ifconfig_em0="DHCP"
+  sysrc ifconfig_vtnet0="DHCP"
+fi
 sysrc defaultrouter="10.0.2.2"
 
 # Set hostname

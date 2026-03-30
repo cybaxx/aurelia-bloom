@@ -2,8 +2,9 @@ CC      ?= cc
 DESTDIR ?= /opt/lab/bin
 NASM    ?= nasm
 
-BASIC_CFLAGS   = -fno-stack-protector -no-pie -g -O0
-HARDENED_CFLAGS = -fstack-protector-all -fPIE -pie -g -O0
+BASIC_CFLAGS   = -fno-stack-protector -no-pie -O0
+HARDENED_CFLAGS = -fstack-protector-all -fPIE -pie -O0
+STRIP  ?= strip
 
 SRCS_FUND = \
 	00-fundamentals/01-stack-overflow/vulnerable.c \
@@ -26,6 +27,7 @@ basic:
 		dir=$$(dirname $$src); \
 		echo "CC (basic) $$src -> $(DESTDIR)/$$name"; \
 		$(CC) $(BASIC_CFLAGS) -o $(DESTDIR)/$$name $$src; \
+		$(STRIP) $(DESTDIR)/$$name; \
 	done
 
 hardened:
@@ -34,6 +36,7 @@ hardened:
 		name=$$(echo $$src | sed 's|.*/||; s|\.c$$||'); \
 		echo "CC (hardened) $$src -> $(DESTDIR)/$$name"; \
 		$(CC) $(HARDENED_CFLAGS) -o $(DESTDIR)/$$name $$src; \
+		$(STRIP) $(DESTDIR)/$$name; \
 	done
 
 clean:

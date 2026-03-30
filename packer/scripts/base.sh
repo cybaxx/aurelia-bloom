@@ -8,7 +8,14 @@ env ASSUME_ALWAYS_YES=yes pkg bootstrap -f
 pkg update -f
 
 # Install essential packages
-pkg install -y sudo bash curl wget virtualbox-ose-additions-nox11
+pkg install -y sudo curl busybox-freebsd dropbear
+
+# VirtualBox guest additions only when running on VirtualBox
+if pciconf -lv 2>/dev/null | grep -qi virtualbox; then
+  pkg install -y virtualbox-ose-additions-nox11
+  sysrc vboxguest_enable="YES"
+  sysrc vboxservice_enable="YES"
+fi
 
 # --- Vagrant user ---
 pw useradd -n vagrant -m -s /bin/sh -G wheel
@@ -31,11 +38,10 @@ cat >> /etc/ssh/sshd_config <<'EOF'
 UseDNS no
 EOF
 
-# --- VirtualBox Guest Additions ---
-sysrc vboxguest_enable="YES"
-sysrc vboxservice_enable="YES"
-
 # --- Minimize image ---
+rm -rf /usr/share/man /usr/share/info /usr/share/examples
+rm -rf /usr/share/locale/[a-df-z]* /usr/share/locale/e[a-mo-z]*
+rm -rf /usr/lib/*.a
 pkg clean -ay
 rm -rf /tmp/*
 dd if=/dev/zero of=/EMPTY bs=1m || true
