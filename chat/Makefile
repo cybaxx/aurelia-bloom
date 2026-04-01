@@ -8,6 +8,7 @@ BINDIR  = .
 
 CHATD_SRCS = $(SRCDIR)/chatd.c $(SRCDIR)/crypto.c $(SRCDIR)/peer.c
 CHAT_SRCS  = $(SRCDIR)/chat.c $(SRCDIR)/crypto.c
+IRCGW_SRCS = $(SRCDIR)/irc-gateway.c
 
 CHATD_OBJS = $(CHATD_SRCS:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
 CHAT_OBJS  = $(CHAT_SRCS:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
@@ -18,7 +19,7 @@ ALL_OBJS = $(ALL_SRCS:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
 
 .PHONY: all clean install
 
-all: $(BINDIR)/chatd $(BINDIR)/chat
+all: $(BINDIR)/chatd $(BINDIR)/chat $(BINDIR)/irc-gateway
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c | $(OBJDIR)
 	$(CC) $(CFLAGS) -I$(SRCDIR) -c -o $@ $<
@@ -29,6 +30,9 @@ $(BINDIR)/chatd: $(CHATD_OBJS)
 $(BINDIR)/chat: $(CHAT_OBJS)
 	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 
+$(BINDIR)/irc-gateway: $(SRCDIR)/irc-gateway.c
+	$(CC) $(CFLAGS) -I$(SRCDIR) -o $@ $< $(LDFLAGS)
+
 $(OBJDIR):
 	mkdir -p $(OBJDIR)
 
@@ -36,6 +40,7 @@ install: all
 	install -d /opt/lab/bin
 	install -m 755 $(BINDIR)/chatd /opt/lab/bin/chatd
 	install -m 755 $(BINDIR)/chat /opt/lab/bin/chat
+	install -m 755 $(BINDIR)/irc-gateway /opt/lab/bin/irc-gateway
 
 clean:
-	rm -rf $(OBJDIR) $(BINDIR)/chatd $(BINDIR)/chat
+	rm -rf $(OBJDIR) $(BINDIR)/chatd $(BINDIR)/chat $(BINDIR)/irc-gateway

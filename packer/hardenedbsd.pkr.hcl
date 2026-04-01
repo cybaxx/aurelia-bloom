@@ -17,7 +17,7 @@ packer {
 
 variable "iso_url" {
   type    = string
-  default = "https://installers.hardenedbsd.org/pub/15-stable/amd64/amd64/disc1.iso"
+  default = "https://installers.hardenedbsd.org/pub/15-stable/amd64/amd64/installer/LATEST/disc1.iso"
 }
 
 variable "iso_checksum" {
@@ -41,6 +41,12 @@ variable "cpus" {
   default = 2
 }
 
+variable "qemu_accelerator" {
+  type        = string
+  default     = "tcg"
+  description = "QEMU accelerator: hvf (macOS Intel), kvm (Linux), tcg (software emulation)"
+}
+
 source "virtualbox-iso" "hardenedbsd" {
   guest_os_type    = "FreeBSD_64"
   iso_url          = var.iso_url
@@ -59,12 +65,13 @@ source "virtualbox-iso" "hardenedbsd" {
 
   http_directory   = "http"
 
-  boot_wait        = "10s"
+  boot_wait        = "30s"
   boot_command = [
-    "<esc><wait>",
-    "boot -s<enter><wait10>",
-    "/bin/sh<enter><wait>",
-    "mdmfs -s 100m md1 /tmp<enter><wait>",
+    " <wait3>",
+    "3<enter><wait3>",
+    "boot -s<enter><wait20>",
+    "/bin/sh<enter><wait3>",
+    "mdmfs -s 100m md1 /tmp<enter><wait3>",
     "dhclient em0<enter><wait5>",
     "fetch -o /tmp/installerconfig http://{{ .HTTPIP }}:{{ .HTTPPort }}/installerconfig<enter><wait3>",
     "bsdinstall script /tmp/installerconfig<enter>",
@@ -90,7 +97,7 @@ source "qemu" "hardenedbsd" {
 
   vm_name          = "hardenedbsd-15stable"
   headless         = true
-  accelerator      = "auto"
+  accelerator      = var.qemu_accelerator
 
   memory           = var.memory
   cpus             = var.cpus
@@ -99,13 +106,14 @@ source "qemu" "hardenedbsd" {
 
   http_directory   = "http"
 
-  boot_wait        = "10s"
+  boot_wait        = "90s"
   boot_command = [
-    "<esc><wait>",
-    "boot -s<enter><wait10>",
-    "/bin/sh<enter><wait>",
-    "mdmfs -s 100m md1 /tmp<enter><wait>",
-    "dhclient vtnet0<enter><wait5>",
+    " <wait5>",
+    "3<enter><wait5>",
+    "boot -s<enter><wait60>",
+    "/bin/sh<enter><wait5>",
+    "mdmfs -s 100m md1 /tmp<enter><wait5>",
+    "dhclient vtnet0<enter><wait15>",
     "fetch -o /tmp/installerconfig http://{{ .HTTPIP }}:{{ .HTTPPort }}/installerconfig<enter><wait3>",
     "bsdinstall script /tmp/installerconfig<enter>",
   ]

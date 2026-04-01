@@ -399,9 +399,17 @@ static void handle_ipc(int ipc_fd)
 
 static void load_onion_address(void)
 {
+    /* Also check $HOME-relative paths for non-root setups */
+    static char home_path[512];
+    const char *home = getenv("HOME");
+    if (home)
+        snprintf(home_path, sizeof(home_path),
+                 "%s/.tor/chatd/hostname", home);
+
     const char *paths[] = {
         "/var/lib/tor/chatd/hostname",
         "/var/db/tor/chatd/hostname",
+        home ? home_path : NULL,
         NULL
     };
 

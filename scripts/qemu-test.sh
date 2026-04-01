@@ -42,7 +42,13 @@ trap cleanup EXIT INT TERM
 detect_accel() {
   case "$(uname -s)" in
     Darwin)
-      ACCEL="hvf"
+      # HVF only works for native arch; Apple Silicon can't HVF x86_64
+      if [ "$(uname -m)" = "arm64" ]; then
+        ACCEL="tcg"
+        warn "Apple Silicon detected — using TCG (x86_64 emulation, slower)"
+      else
+        ACCEL="hvf"
+      fi
       # OVMF firmware locations on macOS
       for fw in \
         /opt/homebrew/share/qemu/edk2-x86_64-code.fd \
